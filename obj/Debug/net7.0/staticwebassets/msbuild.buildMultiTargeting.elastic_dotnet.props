@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\elastic_dotnet.props" />
+</Project>

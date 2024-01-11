@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "WZxKluTWA5wr8QAK/7yyO7HhTeDCMhy2DlcCldUwlKI=",
+  "Source": "elastic_dotnet",
+  "BasePath": "_content/elastic_dotnet",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
