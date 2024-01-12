@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using elastic_dotnet.Config;
 using elastic_dotnet.Models;
@@ -35,6 +36,7 @@ builder.Services.AddSingleton<IElasticClient>(services =>
     return new ElasticClient(settings);
 });
 builder.Services.AddHttpClient<ISentenceEncoder, SentenceEncoder>();
+builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
 
 
