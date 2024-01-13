@@ -1,45 +1,32 @@
-
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using elastic_dotnet.Config;
+using elastic_dotnet.Utils;
 using Microsoft.Extensions.Options;
+using Refit;
 
 namespace elastic_dotnet.Services;
 
 public class SentenceEncoder : ISentenceEncoder
 {
+    private readonly PythonMicroserviceOptions _options;
+    private readonly IPythonMicroservice _pythonMicroservice;
 
-	private readonly HttpClient _httpClient;
-	private readonly PythonMicroserviceOptions _options;
+    public SentenceEncoder(IOptions<PythonMicroserviceOptions> options)
+    {
+        _options = options.Value;
+        _pythonMicroservice = RestService.For<IPythonMicroservice>(_options.Url);
+    }
 
-	public SentenceEncoder(HttpClient httpClient, IOptions<PythonMicroserviceOptions> options)
-	{
-		_httpClient = httpClient;
-		_options = options.Value;
-	}
-
-	public async Task<List<float>> EncodeAsync(string sentence)
-	{
-		var json = JsonSerializer.Serialize(new { sentence });
-		var content = new StringContent(json, Encoding.UTF8, "application/json");
-		var response = await _httpClient.PostAsync(_options.Url, content);
-
-		if (!response.IsSuccessStatusCode)
-		{
-			var errorContent = await response.Content.ReadAsStringAsync();
-			throw new HttpRequestException($"Request failed with status {response.StatusCode}: {errorContent}");
-		}
-
-
-		var encodedSentence = await response.Content.ReadFromJsonAsync<EncodedResponse>();
-		return encodedSentence!.QueryVector!;
-	}
-}
-
-
-internal sealed class EncodedResponse
-{
-	[JsonPropertyName("query_vector")]
-	public required List<float> QueryVector { get; set; }
+    public async Task<List<float>> EncodeAsync(string sentence)
+    {
+        try
+        {
+            var request = new SentenceRequest { Sentence = sentence };
+            var response = await _pythonMicroservice.EncodeSentenceAsync(request);
+            return response.QueryVector;
+        }
+        catch (ApiException apiException)
+        {
+            throw new HttpRequestException($"API request failed, Reason: {apiException.Message}", apiException);
+        }
+    }
 }

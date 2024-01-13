@@ -1,8 +1,5 @@
-using elastic_dotnet.Models;
 using elastic_dotnet.Services;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
 
 namespace elastic_dotnet.Controllers;
 
@@ -25,13 +22,8 @@ public class ProductsController : ControllerBase
 		{
 			return Ok(response.Documents);
 		}
-		else
-		{
-			Console.WriteLine("Error in search query: " + response.DebugInformation);
-			return BadRequest();
-		}
 
+		Console.WriteLine("Error in search query: " + response.DebugInformation);
+		return BadRequest();
 	}
-
-
 }

@@ -1,10 +1,11 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using elastic_dotnet.Config;
 using elastic_dotnet.Models;
 using elastic_dotnet.Services;
+using elastic_dotnet.Utils;
 using Elasticsearch.Net;
 using Nest;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,7 @@ builder.Services.AddSingleton<IElasticClient>(services =>
 
     return new ElasticClient(settings);
 });
-builder.Services.AddHttpClient<ISentenceEncoder, SentenceEncoder>();
+builder.Services.AddScoped<ISentenceEncoder, SentenceEncoder>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
 
