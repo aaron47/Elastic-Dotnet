@@ -1,20 +1,51 @@
 using System.Text;
+using elastic_dotnet;
 using elastic_dotnet.Config;
+using elastic_dotnet.Data;
 using elastic_dotnet.Models;
+using elastic_dotnet.Repository;
 using elastic_dotnet.Services;
-using elastic_dotnet.Utils;
 using Elasticsearch.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Nest;
-using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var config = builder.Configuration;
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = config["JWT:Issuer"],
+        ValidAudience = config["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+{
+    var connectionString = config.GetConnectionString("SqlServer");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
 builder.Services.AddSingleton<IElasticClient>(services =>
 {
     var elasticConfig = builder.Configuration.GetSection("Elastic").Get<ElasticConfiguration>() ?? throw new InvalidOperationException("Elasticsearch configuration is missing.");
@@ -38,7 +69,11 @@ builder.Services.AddSingleton<IElasticClient>(services =>
 });
 builder.Services.AddScoped<ISentenceEncoder, SentenceEncoder>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 
 
 var app = builder.Build();
@@ -52,6 +87,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

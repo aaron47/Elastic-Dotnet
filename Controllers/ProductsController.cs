@@ -1,4 +1,5 @@
 using elastic_dotnet.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace elastic_dotnet.Controllers;
@@ -13,6 +14,7 @@ public class ProductsController : ControllerBase
 		_productsService = productsService;
 	}
 
+	[Authorize]
 	[HttpGet("cosine_search")]
 	public async Task<IActionResult> GetAllProductsCosineSim([FromQuery(Name = "q")] string searchQuery)
 	{
