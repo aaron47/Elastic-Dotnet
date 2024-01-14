@@ -6,15 +6,11 @@ namespace elastic_dotnet.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController : ControllerBase
+public class ProductsController(IProductsService productsService) : ControllerBase
 {
-	private readonly IProductsService _productsService;
-	public ProductsController(IProductsService productsService)
-	{
-		_productsService = productsService;
-	}
+	private readonly IProductsService _productsService = productsService;
 
-	[Authorize]
+    [Authorize]
 	[HttpGet("cosine_search")]
 	public async Task<IActionResult> GetAllProductsCosineSim([FromQuery(Name = "q")] string searchQuery)
 	{

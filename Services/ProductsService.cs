@@ -4,19 +4,13 @@ using Nest;
 
 namespace elastic_dotnet.Services;
 
-public class ProductsService : IProductsService
+public class ProductsService(IElasticClient elasticClient, ISentenceEncoder sentenceEncoder) : IProductsService
 {
-	private static readonly string INDEX_NAME = "french_products";
-	private readonly IElasticClient _elasticClient;
-	private readonly ISentenceEncoder _sentenceEncoder;
+	private const string INDEX_NAME = "french_products";
+	private readonly IElasticClient _elasticClient = elasticClient;
+	private readonly ISentenceEncoder _sentenceEncoder = sentenceEncoder;
 
-	public ProductsService(IElasticClient elasticClient, ISentenceEncoder sentenceEncoder)
-	{
-		_elasticClient = elasticClient;
-		_sentenceEncoder = sentenceEncoder;
-	}
-
-	public async Task<ISearchResponse<Product>> GetProductsAsync(string searchQuery)
+    public async Task<ISearchResponse<Product>> GetProductsAsync(string searchQuery)
 	{
 		List<float> encoded_query = await _sentenceEncoder.EncodeAsync(searchQuery);
 		var products = await KnnSearchAsync<Product>(encoded_query);
