@@ -10,7 +10,7 @@ public class ProductsController(IProductsService productsService) : ControllerBa
 {
 	private readonly IProductsService _productsService = productsService;
 
-    [Authorize]
+	[Authorize]
 	[HttpGet("cosine_search")]
 	public async Task<IActionResult> GetAllProductsCosineSim([FromQuery(Name = "q")] string searchQuery)
 	{

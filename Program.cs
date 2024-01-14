@@ -63,7 +63,6 @@ builder.Services.AddSingleton<IElasticClient>(services =>
             Console.WriteLine($"Request: {Encoding.UTF8.GetString(response.RequestBodyInBytes)}");
             Console.WriteLine($"Response: {Encoding.UTF8.GetString(response.ResponseBodyInBytes)}");
         });
-    ;
 
     return new ElasticClient(settings);
 });

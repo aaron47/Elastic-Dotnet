@@ -10,7 +10,7 @@ public class ProductsService(IElasticClient elasticClient, ISentenceEncoder sent
 	private readonly IElasticClient _elasticClient = elasticClient;
 	private readonly ISentenceEncoder _sentenceEncoder = sentenceEncoder;
 
-    public async Task<ISearchResponse<Product>> GetProductsAsync(string searchQuery)
+	public async Task<ISearchResponse<Product>> GetProductsAsync(string searchQuery)
 	{
 		List<float> encoded_query = await _sentenceEncoder.EncodeAsync(searchQuery);
 		var products = await KnnSearchAsync<Product>(encoded_query);
