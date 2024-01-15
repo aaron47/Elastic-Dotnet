@@ -1,4 +1,5 @@
 using System.Text;
+using Azure.Identity;
 using elastic_dotnet;
 using elastic_dotnet.Config;
 using elastic_dotnet.Data;
@@ -8,6 +9,7 @@ using elastic_dotnet.Services;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Nest;
 
@@ -15,6 +17,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var config = builder.Configuration;
+
+// AZURE CONFIG
+var keyVaultUrl = new Uri(config.GetSection("KeyVaultUrl").Value!);
+var azureCrendential = new DefaultAzureCredential();
+builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
+
+// getting the keys from azure
+var elasticCloudId = builder.Configuration.GetSection("elasticcloudid").Value!;
+var elasticPassword = builder.Configuration.GetSection("elasticpassword").Value!;
+var jwtSecret = builder.Configuration.GetSection("jwtsecret").Value!;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -27,7 +39,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = config["JWT:Issuer"],
         ValidAudience = config["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]!)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -50,8 +62,8 @@ builder.Services.AddSingleton<IElasticClient>(services =>
 {
     var elasticConfig = builder.Configuration.GetSection("Elastic").Get<ElasticConfiguration>() ?? throw new InvalidOperationException("Elasticsearch configuration is missing.");
     var settings = new ConnectionSettings(
-        new CloudConnectionPool(elasticConfig.CloudId,
-        new BasicAuthenticationCredentials(elasticConfig.Username, elasticConfig.Password))
+        new CloudConnectionPool(elasticCloudId,
+        new BasicAuthenticationCredentials(elasticConfig.Username, elasticPassword))
     )
     .DisableDirectStreaming()
     .DefaultMappingFor<Product>(m => m
@@ -69,16 +81,21 @@ builder.Services.AddSingleton<IElasticClient>(services =>
 builder.Services.AddScoped<ISentenceEncoder, SentenceEncoder>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IJwtService, JwtService>(options =>
+{
+    var jwtOptions = new JwtOptions();
+    config.GetSection("JWT").Bind(jwtOptions);
+
+    return new JwtService(new OptionsWrapper<JwtOptions>(jwtOptions), jwtSecret);
+});
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
