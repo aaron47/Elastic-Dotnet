@@ -8,12 +8,10 @@ namespace elastic_dotnet.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IUsersService usersService) : ControllerBase
 {
-	private readonly IUsersService _usersService = usersService;
-
 	[HttpPost("register")]
 	public async Task<IActionResult> Register([FromBody] AuthDTO authDto)
 	{
-		var result = await _usersService.Register(authDto);
+		var result = await usersService.Register(authDto);
 		if (!result.Success)
 		{
 			return BadRequest(new { errors = result.Errors });
@@ -26,7 +24,7 @@ public class AuthController(IUsersService usersService) : ControllerBase
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] AuthDTO authDto)
 	{
-		var result = await _usersService.Login(authDto);
+		var result = await usersService.Login(authDto);
 
 		if (!result.Success)
 		{

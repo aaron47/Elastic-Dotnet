@@ -12,12 +12,11 @@ namespace elastic_dotnet.Services;
 public class JwtService(IOptions<JwtOptions> jwtOptions, string jwtSecret) : IJwtService
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
-    private readonly string _jwtSecret = jwtSecret;
 
     public string GenerateToken(AuthDTO authDto)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var secret = Encoding.UTF8.GetBytes(_jwtSecret);
+        var secret = Encoding.UTF8.GetBytes(jwtSecret);
 
         var claims = new List<Claim>
         {

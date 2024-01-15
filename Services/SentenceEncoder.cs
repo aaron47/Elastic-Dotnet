@@ -7,13 +7,12 @@ namespace elastic_dotnet.Services;
 
 public class SentenceEncoder : ISentenceEncoder
 {
-    private readonly PythonMicroserviceOptions _options;
     private readonly IPythonMicroservice _pythonMicroservice;
 
     public SentenceEncoder(IOptions<PythonMicroserviceOptions> options)
     {
-        _options = options.Value;
-        _pythonMicroservice = RestService.For<IPythonMicroservice>(_options.Url);
+        var optionsValue = options.Value;
+        _pythonMicroservice = RestService.For<IPythonMicroservice>(optionsValue.Url);
     }
 
     public async Task<List<float>> EncodeAsync(string sentence)

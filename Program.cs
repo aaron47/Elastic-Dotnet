@@ -1,6 +1,5 @@
 using System.Text;
 using Azure.Identity;
-using elastic_dotnet;
 using elastic_dotnet.Config;
 using elastic_dotnet.Data;
 using elastic_dotnet.Models;
@@ -20,7 +19,7 @@ var config = builder.Configuration;
 
 // AZURE CONFIG
 var keyVaultUrl = new Uri(config.GetSection("KeyVaultUrl").Value!);
-var azureCrendential = new DefaultAzureCredential();
+var azureCrendential = new DefaultAzureCredential(true);
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
 
 // getting the keys from azure
@@ -58,12 +57,11 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     var connectionString = config.GetConnectionString("SqlServer");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-builder.Services.AddSingleton<IElasticClient>(services =>
+builder.Services.AddSingleton<IElasticClient>(_ =>
 {
-    var elasticConfig = builder.Configuration.GetSection("Elastic").Get<ElasticConfiguration>() ?? throw new InvalidOperationException("Elasticsearch configuration is missing.");
     var settings = new ConnectionSettings(
         new CloudConnectionPool(elasticCloudId,
-        new BasicAuthenticationCredentials(elasticConfig.Username, elasticPassword))
+        new BasicAuthenticationCredentials("elastic", elasticPassword))
     )
     .DisableDirectStreaming()
     .DefaultMappingFor<Product>(m => m
@@ -81,7 +79,7 @@ builder.Services.AddSingleton<IElasticClient>(services =>
 builder.Services.AddScoped<ISentenceEncoder, SentenceEncoder>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IJwtService, JwtService>(options =>
+builder.Services.AddScoped<IJwtService, JwtService>(_ =>
 {
     var jwtOptions = new JwtOptions();
     config.GetSection("JWT").Bind(jwtOptions);

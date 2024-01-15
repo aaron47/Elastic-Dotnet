@@ -8,13 +8,11 @@ namespace elastic_dotnet.Controllers;
 [Route("api/[controller]")]
 public class ProductsController(IProductsService productsService) : ControllerBase
 {
-	private readonly IProductsService _productsService = productsService;
-
 	[Authorize]
 	[HttpGet("cosine_search")]
 	public async Task<IActionResult> GetAllProductsCosineSim([FromQuery(Name = "q")] string searchQuery)
 	{
-		var response = await _productsService.GetProductsAsync(searchQuery);
+		var response = await productsService.GetProductsAsync(searchQuery);
 
 		if (response.IsValid)
 		{

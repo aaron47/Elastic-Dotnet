@@ -7,12 +7,10 @@ namespace elastic_dotnet.Services;
 public class ProductsService(IElasticClient elasticClient, ISentenceEncoder sentenceEncoder) : IProductsService
 {
 	private const string INDEX_NAME = "french_products";
-	private readonly IElasticClient _elasticClient = elasticClient;
-	private readonly ISentenceEncoder _sentenceEncoder = sentenceEncoder;
 
 	public async Task<ISearchResponse<Product>> GetProductsAsync(string searchQuery)
 	{
-		List<float> encoded_query = await _sentenceEncoder.EncodeAsync(searchQuery);
+		List<float> encoded_query = await sentenceEncoder.EncodeAsync(searchQuery);
 		var products = await KnnSearchAsync<Product>(encoded_query);
 
 		return products;
@@ -33,7 +31,7 @@ public class ProductsService(IElasticClient elasticClient, ISentenceEncoder sent
 			_source = new string[] { "ProductName", "Description" },
 		};
 
-		var response = await _elasticClient.LowLevel.SearchAsync<SearchResponse<T>>(INDEX_NAME, PostData.Serializable(query));
+		var response = await elasticClient.LowLevel.SearchAsync<SearchResponse<T>>(INDEX_NAME, PostData.Serializable(query));
 		return response;
 	}
 

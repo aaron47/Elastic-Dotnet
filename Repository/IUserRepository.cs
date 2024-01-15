@@ -1,5 +1,5 @@
 namespace elastic_dotnet.Repository;
-using elastic_dotnet.Models;
+using Models;
 
 
 public interface IUserRepository
