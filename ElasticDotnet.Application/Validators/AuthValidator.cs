@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ElasticDotnet.Application.Validators;
 
-public class AuthValidator : AbstractValidator<AuthDTO>
+internal class AuthValidator : AbstractValidator<AuthDTO>
 {
 	public AuthValidator()
 	{

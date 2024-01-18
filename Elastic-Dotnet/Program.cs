@@ -1,12 +1,15 @@
 using System.Text;
 using Azure.Identity;
+using Elastic_Dotnet.Swagger;
 using ElasticDotnet.Application;
 using ElasticDotnet.Domain.Config;
 using ElasticDotnet.Infrastructure;
 using ElasticDotnet.Presentation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +59,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
@@ -72,6 +76,7 @@ if (!app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseSerilogRequestLogging();
 
