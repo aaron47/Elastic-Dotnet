@@ -1,6 +1,0 @@
-@Elastic_Dotnet_HostAddress = http://localhost:5144
-
-GET {{Elastic_Dotnet_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -6,6 +6,7 @@ using ElasticDotnet.Infrastructure;
 using ElasticDotnet.Presentation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,9 @@ builder.Services
     .AddApplication(elasticCloudId, elasticPassword)
     .AddInfrastructure(connectionString!)
     .AddPresentation();
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -63,12 +67,13 @@ builder.Services.Configure<Secret>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
