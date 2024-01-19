@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ElasticDotnet.Application.Authentication.Commands.Handlers;
 
-public sealed class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, string>
+internal sealed class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, string>
 {
     private readonly JwtOptions _jwtOptions;
     private readonly Secret _secret;

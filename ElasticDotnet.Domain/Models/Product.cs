@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace ElasticDotnet.Domain.Models;
 
-public class Product
+public sealed class Product
 {
 	[JsonPropertyName("ProductName")]
 	public required string ProductName { get; set; }

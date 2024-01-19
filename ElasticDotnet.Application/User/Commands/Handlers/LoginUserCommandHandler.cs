@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ElasticDotnet.Application.User.Commands.Handlers;
 
-public sealed class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, ServiceResult<string>>
+internal sealed class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, ServiceResult<string>>
 {
     private readonly IUserRepository _userRepository;
     private readonly ISender _sender;

@@ -1,6 +1,6 @@
 namespace ElasticDotnet.Domain.Models;
 
-public class AuthDTO
+public sealed class AuthDTO
 {
 	public required string Email { get; set; }
 	public required string Password { get; set; }

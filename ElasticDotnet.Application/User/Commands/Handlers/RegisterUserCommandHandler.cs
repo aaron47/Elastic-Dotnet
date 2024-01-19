@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ElasticDotnet.Application.User.Commands.Handlers;
 
-public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ServiceResult<string>>
+internal sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ServiceResult<string>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IValidator<AuthDTO> _authValidator;

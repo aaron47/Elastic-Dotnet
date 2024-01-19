@@ -1,6 +1,6 @@
 namespace ElasticDotnet.Application;
 
-public class ServiceResult<T>
+public sealed class ServiceResult<T>
 {
 	public bool Success { get; private set; }
 	public T? Data { get; private set; }
