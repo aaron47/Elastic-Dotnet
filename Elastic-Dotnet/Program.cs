@@ -18,7 +18,6 @@ var config = builder.Configuration;
 
 var keyVaultUrl = new Uri(config.GetSection("KeyVaultUrl").Value!);
 
-
 var azureCrendential = new DefaultAzureCredential(true);
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
 
