@@ -6,6 +6,7 @@ using ElasticDotnet.Domain.Config;
 using ElasticDotnet.Infrastructure;
 using ElasticDotnet.Presentation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -25,11 +26,11 @@ builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
 var elasticCloudId = builder.Configuration.GetSection("elasticcloudid").Value!;
 var elasticPassword = builder.Configuration.GetSection("elasticpassword").Value!;
 var jwtSecret = builder.Configuration.GetSection("jwtsecret").Value!;
-var connectionString = config.GetConnectionString("SqlServer");
+var azureConnectionString = builder.Configuration.GetSection("azureconnectionstring").Value!;
 
 builder.Services
     .AddApplication(elasticCloudId, elasticPassword)
-    .AddInfrastructure(connectionString!)
+    .AddInfrastructure()
     .AddPresentation();
 
 builder.Host.UseSerilog((context, configuration) =>
@@ -68,6 +69,9 @@ builder.Services.Configure<Secret>(options =>
     options.JwtSecret = jwtSecret;
 });
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(azureConnectionString,
+        b => b.MigrationsAssembly("Elastic-Dotnet")));
 
 var app = builder.Build();
 

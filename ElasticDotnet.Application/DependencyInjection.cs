@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using ElasticDotnet.Application.Validators;
-using ElasticDotnet.Domain.Config;
 using ElasticDotnet.Domain.Models;
 using Elasticsearch.Net;
 using FluentValidation;
@@ -22,14 +21,14 @@ public static class DependencyInjection
         services.AddSingleton<IElasticClient>(_ =>
         {
             var settings = new ConnectionSettings(
-                new CloudConnectionPool(elasticCloudId,
-                new BasicAuthenticationCredentials("elastic", elasticPassword))
-            )
-            .DisableDirectStreaming()
-            .DefaultMappingFor<Product>(m => m
-                .PropertyName(p => p.ProductName, "ProductName")
-                .PropertyName(p => p.Description, "Description")
-            )
+                    new CloudConnectionPool(elasticCloudId,
+                        new BasicAuthenticationCredentials("elastic", elasticPassword))
+                )
+                .DisableDirectStreaming()
+                .DefaultMappingFor<Product>(m => m
+                    .PropertyName(p => p.ProductName, "ProductName")
+                    .PropertyName(p => p.Description, "Description")
+                )
             .OnRequestCompleted(response =>
                 {
                     Console.WriteLine($"Request: {Encoding.UTF8.GetString(response.RequestBodyInBytes)}");
