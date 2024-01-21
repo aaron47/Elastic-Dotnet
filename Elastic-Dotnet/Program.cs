@@ -26,6 +26,7 @@ var elasticCloudId = builder.Configuration.GetSection("elasticcloudid").Value!;
 var elasticPassword = builder.Configuration.GetSection("elasticpassword").Value!;
 var jwtSecret = builder.Configuration.GetSection("jwtsecret").Value!;
 var azureConnectionString = builder.Configuration.GetSection("azureconnectionstring").Value!;
+var encodeApi = builder.Configuration.GetSection("encodeapi").Value!;
 
 builder.Services
     .AddApplication(elasticCloudId, elasticPassword)
@@ -61,7 +62,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-builder.Services.Configure<PythonMicroserviceOptions>(builder.Configuration.GetSection("PythonMicroservice"));
+builder.Services.Configure<PythonMicroserviceOptions>(options =>
+{
+    options.Url = encodeApi;
+});
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<Secret>(options =>
 {
