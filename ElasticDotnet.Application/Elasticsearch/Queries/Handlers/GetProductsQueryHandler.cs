@@ -63,14 +63,14 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
                 {
                     field = "DescriptionVector",
                     query_vector = queryVector,
-                    k = 10,
+                    k = 20,
                     num_candidates = 150,
                 },
                 new
                 {
                     field = "ProductNameVector",
                     query_vector = queryVector,
-                    k = 5,
+                    k = 10,
                     num_candidates = 150,
                 },
             },
