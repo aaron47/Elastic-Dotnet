@@ -3,4 +3,4 @@ using MediatR;
 
 namespace ElasticDotnet.Application.Elasticsearch.Queries;
 
-public record GetProductsQuery(string SearchQuery) : IRequest<Nest.ISearchResponse<Product>>;
+public record GetProductsQuery(string SearchQuery, KnnSearchRequest KnnSearchRequest) : IRequest<Nest.ISearchResponse<Product>>;

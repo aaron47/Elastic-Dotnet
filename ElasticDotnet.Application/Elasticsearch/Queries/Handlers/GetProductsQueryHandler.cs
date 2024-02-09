@@ -23,7 +23,7 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
         var encodeCommand = new EncodeSentenceCommand(request.SearchQuery);
         var encodedQuery = await _sender.Send(encodeCommand, cancellationToken);
 
-        var products = await KnnSearchAsync<Product>(encodedQuery);
+        var products = await KnnSearchAsync<Product>(encodedQuery, request.KnnSearchRequest);
 
         return products;
     }
@@ -53,7 +53,7 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
     /// - The documents themselves
     /// - Whether the result is valid or not.
     /// </returns>
-    private async Task<ISearchResponse<T>> KnnSearchAsync<T>(List<float> queryVector) where T : class
+    private async Task<ISearchResponse<T>> KnnSearchAsync<T>(List<float> queryVector, KnnSearchRequest knnSearchRequest) where T : class
     {
         var query = new
         {
@@ -63,15 +63,15 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
                 {
                     field = "DescriptionVector",
                     query_vector = queryVector,
-                    k = 20,
-                    num_candidates = 150,
+                    k = knnSearchRequest.TopResDesc,
+                    num_candidates = knnSearchRequest.NumCandidatesDesc,
                 },
                 new
                 {
                     field = "ProductNameVector",
                     query_vector = queryVector,
-                    k = 10,
-                    num_candidates = 150,
+                    k = knnSearchRequest.TopResProdName,
+                    num_candidates = knnSearchRequest.NumCandidatesProdName,
                 },
             },
             _source = new string[] { "ProductName", "Description" },

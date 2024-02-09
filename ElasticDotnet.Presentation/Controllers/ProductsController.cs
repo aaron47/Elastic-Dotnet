@@ -1,4 +1,5 @@
 using ElasticDotnet.Application.Elasticsearch.Queries;
+using ElasticDotnet.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,21 @@ public class ProductsController : ControllerBase
 
     [Authorize]
     [HttpGet("cosine_search")]
-    public async Task<IActionResult> GetAllProductsCosineSim([FromQuery(Name = "q")] string searchQuery)
+    public async Task<IActionResult> GetAllProductsCosineSim(
+        [FromQuery(Name = "q")] string searchQuery,
+        [FromQuery(Name = "num_candidates_desc")] int numCandidatesDesc = 150,
+        [FromQuery(Name = "num_candidates_prodname")] int numCandidatesProdName = 150,
+        [FromQuery(Name = "top_res_desc")] int topResDesc = 20,
+        [FromQuery(Name = "top_res_prodname")] int topResProdName = 10
+    )
     {
-        var getProductsQuery = new GetProductsQuery(searchQuery);
+        var knnSearchRequest = new KnnSearchRequest(
+            NumCandidatesDesc: numCandidatesDesc,
+            NumCandidatesProdName: numCandidatesProdName,
+            TopResDesc: topResDesc,
+            TopResProdName: topResProdName
+        );
+        var getProductsQuery = new GetProductsQuery(searchQuery, knnSearchRequest);
 
         var response = await _sender.Send(getProductsQuery);
 

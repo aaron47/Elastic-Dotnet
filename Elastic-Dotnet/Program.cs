@@ -22,14 +22,12 @@ var azureCrendential = new DefaultAzureCredential(true);
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
 
 // getting the keys from azure
-var elasticCloudId = builder.Configuration.GetSection("elasticcloudid").Value!;
-var elasticPassword = builder.Configuration.GetSection("elasticpassword").Value!;
 var jwtSecret = builder.Configuration.GetSection("jwtsecret").Value!;
 var azureConnectionString = builder.Configuration.GetSection("azureconnectionstring").Value!;
 var encodeApi = builder.Configuration.GetSection("encodeapi").Value!;
 
 builder.Services
-    .AddApplication(elasticCloudId, elasticPassword)
+    .AddApplication()
     .AddInfrastructure()
     .AddPresentation();
 

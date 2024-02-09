@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "69e2814d-ce97-4814-923e-bf2edbcc0649",
+		"name": "Elastic-Dotnet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23396047"
+	},
+	"item": [
+		{
+			"name": "Reset Kibana Password",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "123456789",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "elastic",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"123456789\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/_security/user/kibana_system/_password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_security",
+						"user",
+						"kibana_system",
+						"_password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sentence Encoder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sentence\": \"tawla\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://20.77.18.136:8080/encode",
+					"protocol": "http",
+					"host": [
+						"20",
+						"77",
+						"18",
+						"136"
+					],
+					"port": "8080",
+					"path": [
+						"encode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"string@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7236/api/auth/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7236",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"lol3@gmail.com\",\r\n    \"password\": \"lol12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5149/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5149",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cosine Search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkMmMyODA3Mi0xNzYyLTRiNzAtOGU1MC0zYjJmMjI4ODAxNmUiLCJzdWIiOiJzdHJpbmdAZ21haWwuY29tIiwiZW1haWwiOiJzdHJpbmdAZ21haWwuY29tIiwibmJmIjoxNzA3NTA3ODA4LCJleHAiOjE3MDc1MzY2MDgsImlhdCI6MTcwNzUwNzgwOCwiaXNzIjoiQWFyb24iLCJhdWQiOiJodHRwczovL2F4YW0udG4ifQ.fSgj2c6R73vQ-kfbL9CnugwRnm3WQIvEvFnas3Y6Ot0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7236/api/products/cosine_search?q=trikou azra9&num_candidates_desc=50&num_candidates_prodname=50&top_res_desc=10&top_res_prodname=5",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7236",
+					"path": [
+						"api",
+						"products",
+						"cosine_search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "trikou azra9"
+						},
+						{
+							"key": "num_candidates_desc",
+							"value": "50"
+						},
+						{
+							"key": "num_candidates_prodname",
+							"value": "50"
+						},
+						{
+							"key": "top_res_desc",
+							"value": "10"
+						},
+						{
+							"key": "top_res_prodname",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

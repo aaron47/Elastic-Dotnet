@@ -10,7 +10,7 @@ namespace ElasticDotnet.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services, string elasticCloudId, string elasticPassword)
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;
 
@@ -21,7 +21,8 @@ public static class DependencyInjection
         services.AddSingleton<IElasticClient>(_ =>
         {
             #region Elastic in the cloud
-            // use this part of the code to connect to an elasticsearch cluster in the cloud
+            // use this part of the code to connect to an elasticsearch cluster in the cloud,
+            // provide cloudId and password to this AddApplication method
 
             // var settings = new ConnectionSettings(
             //         new CloudConnectionPool(elasticCloudId,
@@ -38,7 +39,6 @@ public static class DependencyInjection
             //         Console.WriteLine($"Response: {Encoding.UTF8.GetString(response.ResponseBodyInBytes)}");
             //     });
             #endregion
-
 
             #region Elasticsearch with docker-compose
             var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
