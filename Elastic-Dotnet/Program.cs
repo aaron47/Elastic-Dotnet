@@ -1,5 +1,4 @@
 using System.Text;
-using Azure.Identity;
 using Elastic_Dotnet.Swagger;
 using ElasticDotnet.Application;
 using ElasticDotnet.Domain.Config;
