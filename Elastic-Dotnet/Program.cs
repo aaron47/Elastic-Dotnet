@@ -16,15 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 
-var keyVaultUrl = new Uri(config.GetSection("KeyVaultUrl").Value!);
-
-var azureCrendential = new DefaultAzureCredential(true);
-builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCrendential);
-
-// getting the keys from azure
-var jwtSecret = builder.Configuration.GetSection("jwtsecret").Value!;
-var azureConnectionString = builder.Configuration.GetSection("azureconnectionstring").Value!;
-var encodeApi = builder.Configuration.GetSection("encodeapi").Value!;
+var jwtSecret = config["JWT:Secret"];
+var localDbConnectionString = builder.Configuration.GetConnectionString("LocalSqlConnectionString");
+var encodeApi = config["PythonMicroservice:Url"];
 
 builder.Services
     .AddApplication()
@@ -45,7 +39,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = config["JWT:Issuer"],
         ValidAudience = config["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret!)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -62,17 +56,16 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 
 builder.Services.Configure<PythonMicroserviceOptions>(options =>
 {
-    options.Url = encodeApi;
+    options.Url = encodeApi!;
 });
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<Secret>(options =>
 {
-    options.JwtSecret = jwtSecret;
+    options.JwtSecret = jwtSecret!;
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(azureConnectionString,
-        b => b.MigrationsAssembly("Elastic-Dotnet")));
+    options.UseMySql(localDbConnectionString, ServerVersion.AutoDetect(localDbConnectionString), b => b.MigrationsAssembly("Elastic-Dotnet")));
 
 var app = builder.Build();
 

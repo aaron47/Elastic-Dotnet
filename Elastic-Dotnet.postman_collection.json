@@ -154,7 +154,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkMmMyODA3Mi0xNzYyLTRiNzAtOGU1MC0zYjJmMjI4ODAxNmUiLCJzdWIiOiJzdHJpbmdAZ21haWwuY29tIiwiZW1haWwiOiJzdHJpbmdAZ21haWwuY29tIiwibmJmIjoxNzA3NTA3ODA4LCJleHAiOjE3MDc1MzY2MDgsImlhdCI6MTcwNzUwNzgwOCwiaXNzIjoiQWFyb24iLCJhdWQiOiJodHRwczovL2F4YW0udG4ifQ.fSgj2c6R73vQ-kfbL9CnugwRnm3WQIvEvFnas3Y6Ot0",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -171,7 +171,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:7236/api/products/cosine_search?q=trikou azra9&num_candidates_desc=50&num_candidates_prodname=50&top_res_desc=10&top_res_prodname=5",
+					"raw": "https://localhost:7236/api/products/cosine_search?q=عطر&num_candidates_desc=30&num_candidates_prodlabel=20&top_res_desc=10&top_res_prodlabel=10",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -185,23 +185,28 @@
 					"query": [
 						{
 							"key": "q",
-							"value": "trikou azra9"
+							"value": "عطر",
+							"description": "The search query aka the keyword we use to encode and search"
 						},
 						{
 							"key": "num_candidates_desc",
-							"value": "50"
+							"value": "30",
+							"description": "The number of products we want to search from by the description"
 						},
 						{
-							"key": "num_candidates_prodname",
-							"value": "50"
+							"key": "num_candidates_prodlabel",
+							"value": "20",
+							"description": "The number of products we want to search from by the product label"
 						},
 						{
 							"key": "top_res_desc",
-							"value": "10"
+							"value": "10",
+							"description": "The top results with the highest score to return by description"
 						},
 						{
-							"key": "top_res_prodname",
-							"value": "5"
+							"key": "top_res_prodlabel",
+							"value": "10",
+							"description": "The top results with the highest score to return by product label;"
 						}
 					]
 				}

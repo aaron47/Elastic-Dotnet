@@ -2,7 +2,7 @@
 
 public record KnnSearchRequest(
         int NumCandidatesDesc,
-        int NumCandidatesProdName,
+        int NumCandidatesProdLabel,
         int TopResDesc,
-        int TopResProdName
+        int TopResProdLabel
 );
